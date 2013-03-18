@@ -50,14 +50,18 @@ import Base.+, Base.-, Base.*, Base./
 
 +{T}(v1::Point2{T},v2::Point2{T}) = Point2{T}(v1.x+v2.x,v1.y+v2.y)
 -{T}(v1::Point2{T},v2::Point2{T}) = Point2{T}(v1.x-v2.x,v1.y-v2.y)
+*{T}(v1::Point2{T},v2::Point2{T}) = Point2{T}(v1.x*v2.x,v1.y*v2.y)
+/{T}(v1::Point2{T},v2::Point2{T}) = Point2{T}(v1.x/v2.x,v1.y/v2.y)
 *{T}(s::T,v::Point2{T}) = Point2{T}(s*v.x,s*v.y)
-*{T}(v::Point2{T},s::T) = Point2{T}(v.x*s,v.y*s)
+#*{T}(v::Point2{T},s::T) = Point2{T}(v.x*s,v.y*s)
 /{T}(v::Point2{T},s::T) = Point2{T}(v.x/s,v.y/s)
 
 +{T}(v1::Point3{T},v2::Point3{T}) = Point3{T}(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z)
 -{T}(v1::Point3{T},v2::Point3{T}) = Point3{T}(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z)
+*{T}(v1::Point3{T},v2::Point3{T}) = Point3{T}(v1.x*v2.x,v1.y*v2.y,v1.z*v2.z)
+/{T}(v1::Point3{T},v2::Point3{T}) = Point3{T}(v1.x/v2.x,v1.y/v2.y,v1.z/v2.z)
 *{T}(s::T,v::Point3{T}) = Point3{T}(s*v.x,s*v.y,s*v.z)
-*{T}(v::Point3{T},s::T) = Point3{T}(v.x*s,v.y*s,v.z*s)
+#*{T}(v::Point3{T},s::T) = Point3{T}(v.x*s,v.y*s,v.z*s)
 /{T}(v::Point3{T},s::T) = Point3{T}(v.x/s,v.y/s,v.z/s)
 
 
