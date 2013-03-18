@@ -23,8 +23,8 @@ and geophysical coordinate systems;
 Big ideas welcome. 
 Also welcome are sensible ideas about what the right scope for this
 package is, versus what should be left for other dependent packages.
-One thing I would like to do to bound the scope of this library is to keep 
-it pure Julia.
+One thing I would like to consider to bound the scope of this library 
+is to keep it pure Julia.
 
 
 Possible sources of inspiration
@@ -36,7 +36,7 @@ Fairly comprehensive.
 Algorithmically rigorous.
 Minuses: 
 C++ interface would probably require a C binding layer.
-GPL license is more restrictive than the MIT License of
+GPL license is more restrictive than the MIT License of Julia.
 * [__Qhull__](http://www.qhull.org). 
 Plus: the core has undergone years of exercise in the real world.
 Minus: both the C and C++ interfaces are considered incomplete/provisional 
