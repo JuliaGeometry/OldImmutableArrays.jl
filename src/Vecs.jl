@@ -122,17 +122,20 @@ importall Base
 
 +{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x+v2.x,v1.y+v2.y)
 -{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x-v2.x,v1.y-v2.y)
-.*{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x*v2.x,v1.y*v2.y)
-./{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x/v2.x,v1.y/v2.y)
-*{T}(s::T,v::Vec2{T}) = Vec2{T}(s*v.x,s*v.y)
-/{T}(v::Vec2{T},s::T) = Vec2{T}(v.x/s,v.y/s)
+.*{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x.*v2.x,v1.y.*v2.y)
+./{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x./v2.x,v1.y./v2.y)
+.^{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x.^v2.x,v1.y.^v2.y)
 
 +{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z)
 -{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z)
-*{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x*v2.x,v1.y*v2.y,v1.z*v2.z)
-/{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x/v2.x,v1.y/v2.y,v1.z/v2.z)
-*{T}(s::T,v::Vec3{T}) = Vec3{T}(s*v.x,s*v.y,s*v.z)
-/{T}(v::Vec3{T},s::T) = Vec3{T}(v.x/s,v.y/s,v.z/s)
+.*{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x.*v2.x,v1.y.*v2.y,v1.z.*v2.z)
+./{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x./v2.x,v1.y./v2.y,v1.z./v2.z)
+.^{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x.^v2.x,v1.y.^v2.y,v1.z.^v2.z)
 
++{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z,v1.w+v2.w)
+-{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z,v1.w-v2.w)
+.*{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x.*v2.x,v1.y.*v2.y,v1.z.*v2.z,v1.w.*v2.w)
+./{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x./v2.x,v1.y./v2.y,v1.z./v2.z,v1.w./v2.w)
+.^{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x.^v2.x,v1.y.^v2.y,v1.z.^v2.z,v1.w.^v2.w)
 
 end
