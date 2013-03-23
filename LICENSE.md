@@ -1,4 +1,4 @@
-Geometry.jl is licensed under the MIT License:
+Vecs.jl is licensed under the MIT License:
 
 > Copyright (c) 2013: Tracy Wadleigh.
 >
