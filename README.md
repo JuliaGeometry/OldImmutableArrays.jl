@@ -1,7 +1,16 @@
 Vecs.jl
 =======
 
-Fixed-length immutable vectors.
+Fixed-length immutable vectors and matrices.
 
-Currently supports vectors of length 2 through 4, but may eventually be
-macrofied to allow easy instantiation for a larger number of dimensions.
+Features
+--------
+
+- Vectors and matrices of dimension 2 through 4.
+- Basic arithmetic operations.
+
+Someday, maybe
+--------------
+
+- Linear algebra and projective geometry.
+- Macrofication to allow easy instantiation for higher dimensions.
