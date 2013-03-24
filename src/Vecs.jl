@@ -86,7 +86,7 @@ Mat22d, Mat23d, Mat24d, Mat32d, Mat33d, Mat34d,
 Mat42d, Mat43d, Mat44d, Mat2d, Mat3d, Mat4d 
 
 
-# Initialization
+# Construction
 
 zero{T}(::Type{Vec2{T}}) = Vec2{T}(zero(T))
 zero{T}(::Type{Vec3{T}}) = Vec3{T}(zero(T))
@@ -177,14 +177,20 @@ end
 length{T}(::Vec4{T}) = 4
 
 
-# Basic pointwise operations
+# Pointwise unary operations
+
+conj{T}(v::Vec2{T}) = Vec2{T}(conj(v.x),conj(v.y))
+conj{T}(v::Vec3{T}) = Vec2{T}(conj(v.x),conj(v.y),conj(v.z))
+conj{T}(v::Vec4{T}) = Vec2{T}(conj(v.x),conj(v.y),conj(v.z),conj(v.w))
+
+
+# Pointwise binary operations
 
 +{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x+v2.x,v1.y+v2.y)
 -{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x-v2.x,v1.y-v2.y)
 .*{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x.*v2.x,v1.y.*v2.y)
 ./{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x./v2.x,v1.y./v2.y)
 .^{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x.^v2.x,v1.y.^v2.y)
-dot{T}(v1::Vec2{T},v2::Vec2{T}) = v1.x.*v2.x+v1.y.*v2.y
 #+{T}(s::T,v::Vec2{T}) = Vec2{T}(s)+v
 #+{T}(v::Vec2{T},s::T) = s+v
 # -{T}(s::T,v::Vec2{T}) = Vec2{T}(s-v.x,s-v.y)
@@ -202,7 +208,6 @@ dot{T}(v1::Vec2{T},v2::Vec2{T}) = v1.x.*v2.x+v1.y.*v2.y
 .*{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x.*v2.x,v1.y.*v2.y,v1.z.*v2.z)
 ./{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x./v2.x,v1.y./v2.y,v1.z./v2.z)
 .^{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x.^v2.x,v1.y.^v2.y,v1.z.^v2.z)
-dot{T}(v1::Vec3{T},v2::Vec3{T}) = v1.x.*v2.x+v1.y.*v2.y+v1.z.*v2.z
 # +{T}(s::T,v::Vec3{T}) = Vec3{T}(s+v.x,s+v.y,s+v.z)
 # -{T}(s::T,v::Vec3{T}) = Vec3{T}(s-v.x,s-v.y,s-v.z)
 # .*{T}(s::T,v::Vec3{T}) = Vec3{T}(s.*v.x,s.*v.y,s.*v.z)
@@ -219,7 +224,6 @@ dot{T}(v1::Vec3{T},v2::Vec3{T}) = v1.x.*v2.x+v1.y.*v2.y+v1.z.*v2.z
 .*{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x.*v2.x,v1.y.*v2.y,v1.z.*v2.z,v1.w.*v2.w)
 ./{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x./v2.x,v1.y./v2.y,v1.z./v2.z,v1.w./v2.w)
 .^{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x.^v2.x,v1.y.^v2.y,v1.z.^v2.z,v1.w.^v2.w)
-dot{T}(v1::Vec4{T},v2::Vec4{T}) = v1.x.*v2.x+v1.y.*v2.y+v1.z.*v2.z+v1.w.*v2.w
 # +{T}(s::T,v::Vec4{T}) = Vec4{T}(s+v.x,s+v.y,s+v.z,s+v.w)
 # -{T}(s::T,v::Vec4{T}) = Vec4{T}(s-v.x,s-v.y,s-v.z,s-v.w)
 # .*{T}(s::T,v::Vec4{T}) = Vec4{T}(s.*v.x,s.*v.y,s.*v.z,s.*v.w)
@@ -230,5 +234,22 @@ dot{T}(v1::Vec4{T},v2::Vec4{T}) = v1.x.*v2.x+v1.y.*v2.y+v1.z.*v2.z+v1.w.*v2.w
 # .*{T}(v::Vec4{T},s::T) = Vec4{T}(v.x.*s,v.y.*s,v.z.*s,v.w.*s)
 # ./{T}(v::Vec4{T},s::T) = Vec4{T}(v.x./s,v.y./s,v.z./s,v.w./s)
 # .^{T}(v::Vec4{T},s::T) = Vec4{T}(v.x.^s,v.y.^s,v.z.^s,v.w.^s)
+
+
+# reductions
+
+sum{T}(v::Vec2{T}) = v.x+v.y
+sum{T}(v::Vec3{T}) = v.x+v.y+v.z
+sum{T}(v::Vec4{T}) = v.x+v.y+v.z+v.w
+prod{T}(v::Vec2{T}) = v.x.*v.y
+prod{T}(v::Vec3{T}) = v.x.*v.y.*v.z
+prod{T}(v::Vec4{T}) = v.x.*v.y.*v.z.*v.w
+
+
+# some linear algebra
+
+dot{T}(v1::Vec2{T},v2::Vec2{T}) = sum(v1.*conj(v2))
+dot{T}(v1::Vec3{T},v2::Vec3{T}) = sum(v1.*conj(v2))
+dot{T}(v1::Vec4{T},v2::Vec4{T}) = sum(v1.*conj(v2))
 
 end
