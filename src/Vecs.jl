@@ -1,23 +1,34 @@
 module Vecs
 
+importall Base
+
 
 # Basic types
 
 immutable Vec2{T}
     x :: T
     y :: T
+    Vec2(a::T,b::T) = new(a,b)
+    Vec2(a::T) = new(a,a)
 end
+
 immutable Vec3{T}
     x :: T
     y :: T
     z :: T
+    Vec3(a::T,b::T,c::T) = new(a,b,c)
+    Vec3(a::T) = new(a,a,a)
 end
+
 immutable Vec4{T}
     x :: T
     y :: T
     z :: T
     w :: T
+    Vec4(a::T,b::T,c::T,d::T) = new(a,b,c,d)
+    Vec4(a::T) = new(a,a,a,a)
 end
+
 export Vec2, Vec3, Vec4
 
 
@@ -75,9 +86,56 @@ Mat22d, Mat23d, Mat24d, Mat32d, Mat33d, Mat34d,
 Mat42d, Mat43d, Mat44d, Mat2d, Mat3d, Mat4d 
 
 
-# Indexing
+# Initialization
 
-import Base.getindex
+zero{T}(::Type{Vec2{T}}) = Vec2{T}(zero(T))
+zero{T}(::Type{Vec3{T}}) = Vec3{T}(zero(T))
+zero{T}(::Type{Vec4{T}}) = Vec4{T}(zero(T))
+
+function unit{T}(t::Type{Vec2{T}}, i::Integer)
+    if i == 1
+        return Vec2{T}(one(T),zero(T))
+    elseif i == 2
+        return Vec2{T}(zero(T),one(T))
+    else
+        return zero(t)
+    end
+end
+
+function unit{T}(t::Type{Vec3{T}}, i::Integer)
+    if i == 1
+        return Vec3{T}(one(T),zero(T),zero(T))
+    elseif i == 2
+        return Vec3{T}(zero(T),one(T),zero(T))
+    elseif i == 3
+        return Vec3{T}(zero(T),zero(T),one(T))
+    else
+        return zero(t)
+    end
+end
+
+function unit{T}(t::Type{Vec4{T}}, i::Integer)
+    if i == 1
+        return Vec4{T}(one(T),zero(T),zero(T),zero(T))
+    elseif i == 2
+        return Vec4{T}(zero(T),one(T),zero(T),zero(T))
+    elseif i == 3
+        return Vec4{T}(zero(T),zero(T),one(T),zero(T))
+    elseif i == 4
+        return Vec4{T}(zero(T),zero(T),zero(T),one(T))
+    else
+        return zero(t)
+    end
+end
+
+export unit
+
+eye{T}(::Type{Vec2{T}}) = Vec2{T}(unit(T,1),unit(T,2))
+eye{T}(::Type{Vec3{T}}) = Vec3{T}(unit(T,1),unit(T,2),unit(T,3))
+eye{T}(::Type{Vec4{T}}) = Vec4{T}(unit(T,1),unit(T,2),unit(T,3),unit(T,4))
+
+
+# Indexing and length
 
 function getindex{T}(v::Vec2{T}, i::Integer)
     if i == 1
@@ -85,9 +143,10 @@ function getindex{T}(v::Vec2{T}, i::Integer)
     elseif i == 2 
         return v.y
     else
-        throw("Invalid index for Vec2: $i")
+        return zero(T)
     end
 end
+length{T}(::Vec2{T}) = 2
 
 function getindex{T}(v::Vec3{T}, i::Integer)
     if i == 1
@@ -97,9 +156,10 @@ function getindex{T}(v::Vec3{T}, i::Integer)
     elseif i == 3 
         return v.z
     else
-        throw("Invalid index for Vec3: $i")
+        return zero(T)
     end
 end
+length{T}(::Vec3{T}) = 3
 
 function getindex{T}(v::Vec4{T}, i::Integer)
     if i == 1
@@ -111,31 +171,64 @@ function getindex{T}(v::Vec4{T}, i::Integer)
     elseif i == 4 
         return v.w
     else
-        throw("Invalid index for Vec4: $i")
+        return zero(T)
     end
 end
+length{T}(::Vec4{T}) = 4
 
 
-# Basic operations
-
-importall Base
+# Basic pointwise operations
 
 +{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x+v2.x,v1.y+v2.y)
 -{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x-v2.x,v1.y-v2.y)
 .*{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x.*v2.x,v1.y.*v2.y)
 ./{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x./v2.x,v1.y./v2.y)
 .^{T}(v1::Vec2{T},v2::Vec2{T}) = Vec2{T}(v1.x.^v2.x,v1.y.^v2.y)
+dot{T}(v1::Vec2{T},v2::Vec2{T}) = v1.x.*v2.x+v1.y.*v2.y
+#+{T}(s::T,v::Vec2{T}) = Vec2{T}(s)+v
+#+{T}(v::Vec2{T},s::T) = s+v
+# -{T}(s::T,v::Vec2{T}) = Vec2{T}(s-v.x,s-v.y)
+# .*{T}(s::T,v::Vec2{T}) = Vec2{T}(s.*v.x,s.*v.y)
+# ./{T}(s::T,v::Vec2{T}) = Vec2{T}(s./v.x,s./v.y)
+# .^{T}(s::T,v::Vec2{T}) = Vec2{T}(s.^v.x,s.^v.y)
+# -{T}(v::Vec2{T},s::T) = Vec2{T}(v.x-s,v.y-s)
+# .*{T}(v::Vec2{T},s::T) = Vec2{T}(v.x.*s,v.y.*s)
+# ./{T}(v::Vec2{T},s::T) = Vec2{T}(v.x./s,v.y./s)
+# .^{T}(v::Vec2{T},s::T) = Vec2{T}(v.x.^s,v.y.^s)
+
 
 +{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z)
 -{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z)
 .*{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x.*v2.x,v1.y.*v2.y,v1.z.*v2.z)
 ./{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x./v2.x,v1.y./v2.y,v1.z./v2.z)
 .^{T}(v1::Vec3{T},v2::Vec3{T}) = Vec3{T}(v1.x.^v2.x,v1.y.^v2.y,v1.z.^v2.z)
+dot{T}(v1::Vec3{T},v2::Vec3{T}) = v1.x.*v2.x+v1.y.*v2.y+v1.z.*v2.z
+# +{T}(s::T,v::Vec3{T}) = Vec3{T}(s+v.x,s+v.y,s+v.z)
+# -{T}(s::T,v::Vec3{T}) = Vec3{T}(s-v.x,s-v.y,s-v.z)
+# .*{T}(s::T,v::Vec3{T}) = Vec3{T}(s.*v.x,s.*v.y,s.*v.z)
+# ./{T}(s::T,v::Vec3{T}) = Vec3{T}(s./v.x,s./v.y,s./v.z)
+# .^{T}(s::T,v::Vec3{T}) = Vec3{T}(s.^v.x,s.^v.y,s.^v.z)
+# +{T}(v::Vec3{T},s::T) = Vec3{T}(v.x+s,v.y+s,v.z+s)
+# -{T}(v::Vec3{T},s::T) = Vec3{T}(v.x-s,v.y-s,v.z-s)
+# .*{T}(v::Vec3{T},s::T) = Vec3{T}(v.x.*s,v.y.*s,v.z.*s)
+# ./{T}(v::Vec3{T},s::T) = Vec3{T}(v.x./s,v.y./s,v.z./s)
+# .^{T}(v::Vec3{T},s::T) = Vec3{T}(v.x.^s,v.y.^s,v.z.^s)
 
 +{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z,v1.w+v2.w)
 -{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z,v1.w-v2.w)
 .*{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x.*v2.x,v1.y.*v2.y,v1.z.*v2.z,v1.w.*v2.w)
 ./{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x./v2.x,v1.y./v2.y,v1.z./v2.z,v1.w./v2.w)
 .^{T}(v1::Vec4{T},v2::Vec4{T}) = Vec4{T}(v1.x.^v2.x,v1.y.^v2.y,v1.z.^v2.z,v1.w.^v2.w)
+dot{T}(v1::Vec4{T},v2::Vec4{T}) = v1.x.*v2.x+v1.y.*v2.y+v1.z.*v2.z+v1.w.*v2.w
+# +{T}(s::T,v::Vec4{T}) = Vec4{T}(s+v.x,s+v.y,s+v.z,s+v.w)
+# -{T}(s::T,v::Vec4{T}) = Vec4{T}(s-v.x,s-v.y,s-v.z,s-v.w)
+# .*{T}(s::T,v::Vec4{T}) = Vec4{T}(s.*v.x,s.*v.y,s.*v.z,s.*v.w)
+# ./{T}(s::T,v::Vec4{T}) = Vec4{T}(s./v.x,s./v.y,s./v.z,s./v.w)
+# .^{T}(s::T,v::Vec4{T}) = Vec4{T}(s.^v.x,s.^v.y,s.^v.z,s.^v.w)
+# +{T}(v::Vec4{T},s::T) = Vec4{T}(v.x+s,v.y+s,v.z+s,v.w+s)
+# -{T}(v::Vec4{T},s::T) = Vec4{T}(v.x-s,v.y-s,v.z-s,v.w-s)
+# .*{T}(v::Vec4{T},s::T) = Vec4{T}(v.x.*s,v.y.*s,v.z.*s,v.w.*s)
+# ./{T}(v::Vec4{T},s::T) = Vec4{T}(v.x./s,v.y./s,v.z./s,v.w./s)
+# .^{T}(v::Vec4{T},s::T) = Vec4{T}(v.x.^s,v.y.^s,v.z.^s,v.w.^s)
 
 end
