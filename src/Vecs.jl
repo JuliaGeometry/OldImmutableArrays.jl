@@ -180,8 +180,8 @@ length{T}(::Vec4{T}) = 4
 # Pointwise unary operations
 
 conj{T}(v::Vec2{T}) = Vec2{T}(conj(v.x),conj(v.y))
-conj{T}(v::Vec3{T}) = Vec2{T}(conj(v.x),conj(v.y),conj(v.z))
-conj{T}(v::Vec4{T}) = Vec2{T}(conj(v.x),conj(v.y),conj(v.z),conj(v.w))
+conj{T}(v::Vec3{T}) = Vec3{T}(conj(v.x),conj(v.y),conj(v.z))
+conj{T}(v::Vec4{T}) = Vec4{T}(conj(v.x),conj(v.y),conj(v.z),conj(v.w))
 
 
 # Pointwise binary operations
