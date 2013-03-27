@@ -6,7 +6,6 @@ Fixed-size immutable vectors and matrices.
 ## Features
 
 - Vectors of dimension 2 through 4.
-- Higher-order functions (map, zipWith, fold).
 - Basic arithmetic operations.
 
 
