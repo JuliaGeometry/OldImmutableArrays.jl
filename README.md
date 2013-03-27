@@ -1,22 +1,25 @@
-# Vecs.jl
+# ImmutableArrays.jl
 
-Fixed-length immutable vectors and matrices.
+Fixed-size immutable vectors and matrices.
 
 
 ## Features
 
-- Vectors and matrices of dimension 2 through 4.
+- Vectors of dimension 2 through 4.
+- Higher-order functions (map, zipWith, fold).
 - Basic arithmetic operations.
 
 
 ## TODO
 
-- Add a complete test suite.
-- Add conversion to/from Vector/Matrix.
+- Add matrices.
 - Add linear algebra.
 - Add projective geometry.
+- Add a complete test suite.
+- Translate more functions to automatic generation.
 
 
-## Someday, maybe
+## Credits
 
-- Macrofication to allow easy instantiation for higher dimensions.
+- Automatic generation of types jumpstarted via 
+  [Jay Weisskopf's gist](https://gist.github.com/jayschwa/5250636).

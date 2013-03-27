@@ -1,4 +1,6 @@
-using Vecs
+using ImmutableArrays
+
+typealias Vec3d Vector3{Float64}
 
 v1 = Vec3d(1.0,2.0,3.0)
 v2 = Vec3d(6.0,5.0,4.0)
