@@ -80,6 +80,7 @@ for n = 2:4
     end
 
     # pointwise unary operations
+    mapMethod(:-)
     mapMethod(:conj)
 
     # pointwise binary operations
