@@ -45,7 +45,7 @@ for n = 2:4
     @eval zero{T}(::Type{$TypT}) = $TypT(zero(T))
 
     # define getindex
-    local getix = :(return zero(T))
+    local getix = :(error(BoundsError))
     for i = n:-1:1
         en = Expr(:quote,symbol(string("e",i)))
         getix = :(if ix == $i return v.($en) else $getix end)
