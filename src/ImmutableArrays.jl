@@ -1,4 +1,4 @@
-module Vecs
+module ImmutableArrays
 
 importall Base
 

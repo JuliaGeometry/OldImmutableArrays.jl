@@ -1,4 +1,4 @@
-# Vecs.jl
+# ImmutableArrays.jl
 
 Fixed-length immutable vectors and matrices.
 
