@@ -1,4 +1,4 @@
-Vecs.jl is licensed under the MIT License:
+ImmutableArrays.jl is licensed under the MIT License:
 
 > Copyright (c) 2013: Tracy Wadleigh.
 >
