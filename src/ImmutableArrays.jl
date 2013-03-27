@@ -7,33 +7,31 @@ typealias ImmutableVector{T} ImmutableArray{T,1}
 typealias ImmutableMatrix{T} ImmutableArray{T,2}
 
 # generate the vector types
+export Vector2, Vector3, Vector4
 for n = 2:4
     local Typ = symbol(string("Vector",n))
     local TypT = Expr(:curly, Typ, :T)
+    element(i) = Expr(:quote,symbol(string("e",i)))
 
     # the body of the type definition
     local defn = :(immutable $TypT <: ImmutableVector{T} end)
 
     # the members of the type
     for i = 1:n
-        local elt = symbol(string("e",i))
+        local elt = element(i).args[1]
         push!(defn.args[3].args, :($elt::T))
     end
 
-    # n-ary constructor
+    # unary, n-ary constructors
     local ctorn = :($Typ() = new())
+    local ctor1 = :($Typ(a) = new())
     for i = 1:n
         local arg = symbol(string("a",i))
         push!(ctorn.args[1].args, arg)
         push!(ctorn.args[2].args, arg)
-    end
-    push!(defn.args[3].args, ctorn)
-
-    # unary constructor
-    local ctor1 = :($Typ(a) = new())
-    for i = 1:n
         push!(ctor1.args[2].args, :a)
     end
+    push!(defn.args[3].args, ctorn)
     push!(defn.args[3].args, ctor1)
 
     # instantiate the type definition
@@ -47,47 +45,55 @@ for n = 2:4
     # define getindex
     local getix = :(error(BoundsError))
     for i = n:-1:1
-        en = Expr(:quote,symbol(string("e",i)))
-        getix = :(if ix == $i return v.($en) else $getix end)
+        local elt = element(i)
+        getix = :(if ix == $i return v.($elt) else $getix end)
     end
     getix = :(getindex{T}(v::$TypT, ix::Integer) = $getix)
     eval(getix)
 
-    # higher-order functions
-    # Note: these are type-constrained (f:T->T or f:TxT->T).
-    # That's good enough to define the basic operations that we want
-    # but maybe we can/should generalize it.
-    local mp = :($TypT())
-    local zp = :($TypT())
-    local fl = :s
-    for i = 1:n
-        local en = Expr(:quote,symbol(string("e",i)))
-        push!(mp.args, :(f(v.($en))))
-        push!(zp.args, :(f(v1.($en),v2.($en))))
-        fl = :(f($fl,v.($en)))
+    # functions for defining methods
+    mapMethod(f) = begin
+        mp = :($TypT())
+        for i = 1:n
+            local elt = element(i)
+            push!(mp.args, Expr(:call,f,:(v.($elt))))
+        end
+        @eval $f{T}(v::$TypT) = $mp
     end
-    @eval map{T}(f,v::$TypT) = $mp
-    @eval zipWith{T}(f,v1::$TypT,v2::$TypT) = $zp
-    @eval fold{T}(f,s::T,v::$TypT) = $fl
+
+    zipWithMethod(f) = begin
+        zp = :($TypT())
+        for i = 1:n
+            local elt = element(i)
+            push!(zp.args, Expr(:call,f,:(v1.($elt)),:(v2.($elt))))
+        end
+        @eval $f{T}(v1::$TypT,v2::$TypT) = $zp
+    end
+
+    foldMethod(m,f,s) = begin
+        fl = s
+        for i = 1:n
+            local elt = element(i)
+            fl = Expr(:call,f,fl,:(v.($elt)))
+        end
+        @eval $m{T}(v::$TypT) = $fl
+    end
 
     # pointwise unary operations
-    @eval conj{T}(v::$TypT) = map(conj,v)
+    mapMethod(:conj)
 
     # pointwise binary operations
-    @eval  +{T}(v1::$TypT,v2::$TypT) = zipWith( +,v1,v2)
-    @eval  -{T}(v1::$TypT,v2::$TypT) = zipWith( -,v1,v2)
-    @eval .*{T}(v1::$TypT,v2::$TypT) = zipWith(.*,v1,v2)
-    @eval ./{T}(v1::$TypT,v2::$TypT) = zipWith(./,v1,v2)
-    @eval .^{T}(v1::$TypT,v2::$TypT) = zipWith(.^,v1,v2)
+    zipWithMethod(:+)
+    zipWithMethod(:-)
+    zipWithMethod(:.*)
+    zipWithMethod(:./)
+    zipWithMethod(:.^)
 
     # reductions
-    @eval sum{T}(v::$TypT) = fold(+,zero(T),v)
-    @eval prod{T}(v::$TypT) = fold(*,one(T),v)
+    foldMethod(:sum,:+,:(zero(T)))
+    foldMethod(:prod,:*,:(one(T)))
 
     @eval dot{T}(v1::$TypT,v2::$TypT) = sum(v1.*conj(v2))
 end
-
-export Vector2, Vector3, Vector4
-export zipWith, fold
 
 end
