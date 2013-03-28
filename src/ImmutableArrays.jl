@@ -29,7 +29,7 @@ for n = 2:maxDim
         push!(defn.args[3].args, :($elt::T))
     end
 
-    # unary, n-ary constructors
+    # inner unary and n-ary constructors
     local ctorn = :($Typ() = new())
     local ctor1 = :($Typ(a) = new())
     for i = 1:n
@@ -43,6 +43,17 @@ for n = 2:maxDim
 
     # instantiate the type definition
     eval(defn)
+
+    # outer unary and n-ary constructors
+    ctorn = :($TypT() = $TypT())
+    ctor1 = :($TypT(a::T) = $TypT(a))
+    for i = 1:n
+        local arg = symbol(string("a",i))
+        push!(ctorn.args[1].args, :($arg::T))
+        push!(ctorn.args[2].args, arg)
+    end
+    eval(ctorn)
+    eval(ctor1)
 
     # define getindex
     local getix = :(error(BoundsError))
@@ -184,5 +195,8 @@ for n = 2:maxDim
         @eval size(::$Typ) = ($n,$m)
     end
 end
+
+cross(a::Vector3,b::Vector3) =
+    Vector3(a.e2*b.e3-a.e3*b.e2, a.e3*b.e1-a.e1*b.e3, a.e1*b.e2-a.e2*b.e1)
 
 end
