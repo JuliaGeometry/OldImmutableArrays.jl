@@ -132,4 +132,7 @@ for n = 2:4
     @eval norm{T}(v::$TypT) = sqrt(dot(v,v))
 end
 
+cross(a::Vector3,b::Vector3) =
+    Vector3(a.e2*b.e3-a.e3*b.e2, a.e3*b.e1-a.e1*b.e3, a.e1*b.e2-a.e2*b.e1)
+
 end

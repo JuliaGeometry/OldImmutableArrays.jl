@@ -60,3 +60,7 @@ v2 = Vec3d(6.0,5.0,4.0)
 
 # vector norm
 @assert norm(Vec3d(1.0,2.0,2.0)) == 3.0
+
+# cross product
+@assert cross(v1,v2) == Vec3d(-7.0,14.0,-7.0)
+@assert isa(cross(v1,v2),Vec3d)
