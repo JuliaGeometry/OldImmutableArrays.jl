@@ -37,11 +37,6 @@ for n = 2:4
     # instantiate the type definition
     eval(defn)
 
-    # some one-liners
-    @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
-    @eval size(::$Typ) = ($n,)
-    @eval zero{T}(::Type{$TypT}) = $TypT(zero(T))
-
     # define getindex
     local getix = :(error(BoundsError))
     for i = n:-1:1
@@ -68,11 +63,11 @@ for n = 2:4
     end
     mapBinOpLeftMethod(op) = begin
         local bdy = mapBody(:($op(s,x)),3)
-        @eval $op{T}(s::T,v::$TypT) = $bdy
+        @eval $op{T}(s::Number,v::$TypT) = $bdy
     end
     mapBinOpRightMethod(op) = begin
         local bdy = mapBody(:($op(x,s)),2)
-        @eval $op{T}(v::$TypT,s::T) = $bdy
+        @eval $op{T}(v::$TypT,s::Number) = $bdy
     end
 
     zipWithMethod(f) = begin
@@ -118,7 +113,12 @@ for n = 2:4
     foldMethod(:sum,:+,:(zero(T)))
     foldMethod(:prod,:*,:(one(T)))
 
+    # some one-liners
+    @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
+    @eval size(::$Typ) = ($n,)
+    @eval zero{T}(::Type{$TypT}) = $TypT(zero(T))
     @eval dot{T}(v1::$TypT,v2::$TypT) = sum(v1.*conj(v2))
+    @eval norm{T}(v::$TypT) = sqrt(dot(v,v))
 end
 
 end
