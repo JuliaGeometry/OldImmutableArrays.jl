@@ -52,13 +52,27 @@ for n = 2:4
     eval(getix)
 
     # functions for defining methods
-    mapMethod(f) = begin
+    mapBody(f,j) = begin
         mp = :($TypT())
         for i = 1:n
             local elt = element(i)
-            push!(mp.args, Expr(:call,f,:(v.($elt))))
+            local ff = copy(f)
+            ff.args[j] = :(v.($elt))
+            push!(mp.args, ff)
         end
-        @eval $f{T}(v::$TypT) = $mp
+        mp
+    end
+    mapMethod(f) = begin
+        local bdy = mapBody(:($f(x)),2)
+        @eval $f{T}(v::$TypT) = $bdy
+    end
+    mapBinOpLeftMethod(op) = begin
+        local bdy = mapBody(:($op(s,x)),3)
+        @eval $op{T}(s::T,v::$TypT) = $bdy
+    end
+    mapBinOpRightMethod(op) = begin
+        local bdy = mapBody(:($op(x,s)),2)
+        @eval $op{T}(v::$TypT,s::T) = $bdy
     end
 
     zipWithMethod(f) = begin
@@ -89,6 +103,16 @@ for n = 2:4
     zipWithMethod(:.*)
     zipWithMethod(:./)
     zipWithMethod(:.^)
+    mapBinOpLeftMethod(:+)
+    mapBinOpLeftMethod(:-)
+    mapBinOpLeftMethod(:.*)
+    mapBinOpLeftMethod(:./)
+    mapBinOpLeftMethod(:.^)
+    mapBinOpRightMethod(:+)
+    mapBinOpRightMethod(:-)
+    mapBinOpRightMethod(:.*)
+    mapBinOpRightMethod(:./)
+    mapBinOpRightMethod(:.^)
 
     # reductions
     foldMethod(:sum,:+,:(zero(T)))
