@@ -1,21 +1,29 @@
 # ImmutableArrays.jl
 
-Fixed-size immutable vectors and matrices.
+Statically-sized immutable vectors and matrices.
 
 
 ## Features
 
-- Vectors of dimension 2 through 4.
-- Basic arithmetic operations.
+- A macro for generating vector and matrix types and methods up to
+  an arbitrary dimension.
+- A default instantiation of types up to dimension 4.
+- Unrolled implementations of arithmetic operations 
+  and mathematical functions.
+- Unrolled matrix-vector and matrix-matrix multiplication.
+- Conversions between vectors and row/column matrices.
 
 
 ## TODO
 
-- Add matrices.
-- Add linear algebra.
-- Add projective geometry.
 - Add a complete test suite.
-- Translate more functions to automatic generation.
+- Add projective geometry.
+
+
+## Status
+
+The implementation is, in intention at least, fairly feature-complete.
+However, vast amounts of the code are as yet untested. Please use caution.
 
 
 ## Credits
