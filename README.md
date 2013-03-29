@@ -5,7 +5,7 @@ Statically-sized immutable vectors and matrices.
 
 ## Features
 
-- A macro for generating vector and matrix types and methods up to
+- A function for generating vector and matrix types and methods up to
   an arbitrary dimension.
 - A default instantiation of types up to dimension 4.
 - Unrolled implementations of arithmetic operations 

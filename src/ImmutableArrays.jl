@@ -1,7 +1,7 @@
 module ImmutableArrays
 
 include("generate_arrays.jl")
-@generateArrays 4
+generateArrays(4)
 
 export Vector1,   Vector2,   Vector3,   Vector4,
        Matrix1x1, Matrix1x2, Matrix1x3, Matrix1x4,

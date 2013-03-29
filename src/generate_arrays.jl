@@ -6,7 +6,7 @@ typealias ImmutableMatrix{T} ImmutableArray{T,2}
 
 export unit, row, column
 
-macro generateArrays(maxSz)
+function generateArrays(maxSz::Integer)
 
     # operations
     const unaryOps = (:-, :~, :conj, :abs, 
