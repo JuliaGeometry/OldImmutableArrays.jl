@@ -16,14 +16,17 @@ Statically-sized immutable vectors and matrices.
 
 ## TODO
 
-- Add a complete test suite.
+- Add a more complete correctness test suite.
+- Add a performance benchmark test suite.
 - Add projective geometry.
 
 
 ## Status
 
 The implementation is, in intention at least, fairly feature-complete.
-However, vast amounts of the code are as yet untested. Please use caution.
+The code has been lightly tested,
+sufficient to give the author some degree of confidence in its correctness, 
+but be warned that it is still fairly immature.
 
 
 ## Credits

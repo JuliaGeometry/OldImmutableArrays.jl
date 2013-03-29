@@ -1,6 +1,7 @@
 using ImmutableArrays
 
 typealias Vec3d Vector3{Float64}
+typealias Vec4d Vector4{Float64}
 
 v1 = Vec3d(1.0,2.0,3.0)
 v2 = Vec3d(6.0,5.0,4.0)
@@ -64,3 +65,34 @@ v2 = Vec3d(6.0,5.0,4.0)
 # cross product
 @assert cross(v1,v2) == Vec3d(-7.0,14.0,-7.0)
 @assert isa(cross(v1,v2),Vec3d)
+
+# basis vectors
+e1 = unit(Vec4d,1)
+e2 = unit(Vec4d,2)
+e3 = unit(Vec4d,3)
+e4 = unit(Vec4d,4)
+@assert e1 == Vec4d(1.0,0.0,0.0,0.0)
+@assert e2 == Vec4d(0.0,1.0,0.0,0.0)
+@assert e3 == Vec4d(0.0,0.0,1.0,0.0)
+@assert e4 == Vec4d(0.0,0.0,0.0,1.0)
+
+# matrix operations
+typealias Mat4d Matrix4x4{Float64}
+typealias Mat1d Matrix1x1{Float64}
+v = Vec4d(1.0,2.0,3.0,4.0)
+r = row(v)
+c = column(v)
+@assert c*r == Mat4d(Vec4d(1.0,2.0,3.0,4.0),
+                     Vec4d(2.0,4.0,6.0,8.0),
+                     Vec4d(3.0,6.0,9.0,12.0),
+                     Vec4d(4.0,8.0,12.0,16.0))
+@assert r*c == Matrix1x1(30.0)
+@assert r' == c
+@assert c' == r
+@assert row(r,1) == v
+@assert column(c,1) == v
+@assert row(r+c',1) == 2*v
+@assert sum(r) == sum(v)
+@assert prod(c) == prod(v)
+@assert v*eye(Mat4d)*v == 30.0
+@assert -r == -1.0*r

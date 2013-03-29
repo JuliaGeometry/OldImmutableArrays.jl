@@ -212,7 +212,7 @@ function generateArrays(maxSz::Integer)
         # outer unary and n-ary constructors
         ctorn = :($TypT() = $TypT())
         ctor1 = :($TypT(a::$ColTypT) = $TypT(a))
-        for i = 1:rSz
+        for i = 1:cSz
             local arg = symbol(string("a",i))
             push!(ctorn.args[1].args, :($arg::$ColTypT))
             push!(ctorn.args[2].args, arg)
@@ -225,35 +225,34 @@ function generateArrays(maxSz::Integer)
 
         # column access
         local cl = :(error(BoundsError))
-        for i = cSz:-1:1
-            local val = mem(:m,col(i))
-            cl = :(ix == $i ? $val : $cl)
+        for j = cSz:-1:1
+            local val = mem(:m,col(j))
+            cl = :(ix == $j ? $val : $cl)
         end
-        cl = :(column{T}(m::$TypT, ix::Integer) = $cl)
-        eval(cl)
+        @eval column{T}(m::$TypT, ix::Integer) = $cl
 
         # row access
         local rw = :(error(BoundsError))
         for i = rSz:-1:1
             local rowexp = :($RowTypT())
             for j = 1:cSz
-                push!(rowexp.args, mem(:m,mem(col(j),elt(i))))
+                push!(rowexp.args, mem(mem(:m,col(j)),elt(i)))
             end
             rw = :(ix == $i ? $rowexp : $rw)
         end
-        rw = :(row{T}(m::$TypT, ix::Integer) = $rw)
-        eval(rw)
+        @eval row{T}(m::$TypT, ix::Integer) = $rw
 
         # getindex
-        @eval getindex{T}(m::$TypT, i::Integer, j::Integer) = 
-        column(m,j)[i]
+        @eval getindex{T}(m::$TypT, i::Integer, j::Integer) = column(m,j)[i]
+        @eval getindex{T}(m::$TypT, ix::Integer) = 
+            getindex(m,mod(ix-1,$rSz)+1,div(ix-1,$rSz)+1)
 
         # ctranspose
         local bdy = Expr(:call, matTypT(cSz,rSz))
         for i = 1:rSz
             local rw = :($RowTypT())
             for j = 1:cSz
-                local val = mem(:m,mem(col(j),elt(i)))
+                local val = mem(mem(:m,col(j)),elt(i))
                 push!(rw.args, :(conj($val)))
             end
             push!(bdy.args, rw)
@@ -267,7 +266,7 @@ function generateArrays(maxSz::Integer)
                 local cl = :($ColTyp())
                 for i = 1:rSz
                     local ff = copy(f)
-                    ff.args[k] = mem(:m,mem(col(j),elt(i)))
+                    ff.args[k] = mem(mem(:m,col(j)),elt(i))
                     push!(cl.args, ff)
                 end
                 push!(bdy.args, cl)
@@ -287,8 +286,8 @@ function generateArrays(maxSz::Integer)
                 for i = 1:rSz
                     push!(cl.args, 
                           Expr(:call,op,
-                               mem(:m1,mem(col(j),elt(i))),
-                               mem(:m2,mem(col(j),elt(i)))))
+                               mem(mem(:m1,col(j)),elt(i)),
+                               mem(mem(:m2,col(j)),elt(i))))
                 end
                 push!(bdy.args, cl)
             end
@@ -304,34 +303,34 @@ function generateArrays(maxSz::Integer)
         for pr = reductions
             local bdy = Expr(:call,pr[2])
             for i = 1:rSz, j = 1:cSz
-                push!(bdy.args, mem(:m,mem(col(j),elt(i))))
+                push!(bdy.args, mem(mem(:m,col(j)),elt(i)))
             end
             local meth = pr[1]
             @eval $meth(m::$Typ) = $bdy
         end
 
         # vector-matrix multiplication
-        bdy = :(RowTypT())
+        bdy = :($RowTypT())
         for j = 1:cSz
             local e = :(+())
             for i = 1:rSz
                 push!(e.args, 
                       Expr(:call, :*,
                            mem(:v,elt(i)),
-                           mem(:m,mem(col(j),elt(i)))))
+                           mem(mem(:m,col(j)),elt(i))))
             end
             push!(bdy.args, e)
         end
         @eval *{T}(v::$ColTypT,m::$TypT) = $bdy
 
         # matrix-vector multiplication
-        bdy = :(ColTypT())
+        bdy = :($ColTypT())
         for i = 1:rSz
             local e = :(+())
             for j = 1:cSz
                 push!(e.args, 
                       Expr(:call, :*,
-                           mem(:m,mem(col(j),elt(i))),
+                           mem(mem(:m,col(j)),elt(i)),
                            mem(:v,elt(j))))
             end
             push!(bdy.args, e)
@@ -344,7 +343,7 @@ function generateArrays(maxSz::Integer)
             push!(bdy.args, 
                   Expr(:call, :*, 
                        mem(:vl,elt(i)),
-                       mem(:m,mem(col(j),elt(i))),
+                       mem(mem(:m,col(j)),elt(i)),
                        mem(:vr,elt(j))))
         end
         @eval *{T}(vl::$ColTypT,m::$TypT,vr::$RowTypT) = $bdy
@@ -372,8 +371,8 @@ function generateArrays(maxSz::Integer)
                 for k = 1:p
                     push!(e.args,
                           Expr(:call, :*,
-                               mem(:m1,mem(col(k),elt(i))),
-                               mem(:m2,mem(col(j),elt(k)))))
+                               mem(mem(:m1,col(k)),elt(i)),
+                               mem(mem(:m2,col(j)),elt(k))))
                 end
                 push!(c.args, e)
             end
