@@ -1,5 +1,6 @@
 using ImmutableArrays
 
+typealias Vec2d Vector2{Float64}
 typealias Vec3d Vector3{Float64}
 typealias Vec4d Vector4{Float64}
 
@@ -79,6 +80,10 @@ e4 = unit(Vec4d,4)
 # matrix operations
 typealias Mat4d Matrix4x4{Float64}
 typealias Mat1d Matrix1x1{Float64}
+typealias Mat2d Matrix2x2{Float64}
+
+@assert zero(Mat2d) == Mat2d(Vec2d(0.0,0.0),Vec2d(0.0,0.0))
+
 v = Vec4d(1.0,2.0,3.0,4.0)
 r = row(v)
 c = column(v)

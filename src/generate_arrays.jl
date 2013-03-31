@@ -358,7 +358,7 @@ function generateArrays(maxSz::Integer)
         # some one-liners
         @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
         @eval size(::$Typ) = ($rSz,$cSz)
-        @eval zero{T}(::Type{$TypT}) = $TypT(zero(T))
+        @eval zero{T}(::Type{$TypT}) = $TypT($ColTypT(zero(T)))
     end
 
     # matrix-matrix multiplication

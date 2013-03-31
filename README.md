@@ -16,6 +16,7 @@ Statically-sized immutable vectors and matrices.
 
 ## TODO
 
+- Add more constructors.
 - Add a more complete correctness test suite.
 - Add a performance benchmark test suite.
 - Add projective geometry.
