@@ -72,7 +72,6 @@ function generateArrays(maxSz::Integer)
         # instantiate the type definition
         eval(defn)
 
-
         # outer unary and n-ary constructors
         ctorn = :($TypT() = $TypT())
         ctor1 = :($TypT(a::T) = $TypT(a))
@@ -167,6 +166,14 @@ function generateArrays(maxSz::Integer)
             push!(bdy.args, :(i==$j?one(T):zero(T)))
         end
         @eval unit{T}(::Type{$TypT}, i::Integer) = $bdy
+
+        # diagonal matrix
+        sqMatTypT = matTypT(sz,sz)
+        bdy = :($sqMatTypT())
+        for i = 1:sz
+            push!(bdy.args, :(v[$i].*unit($TypT,$i)))
+        end
+        @eval diagm{T}(v::$TypT) = $bdy
 
         # some one-liners
         @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
@@ -354,6 +361,15 @@ function generateArrays(maxSz::Integer)
             push!(bdy.args, :(unit($ColTypT,$j)))
         end
         @eval eye{T}(::Type{$TypT}) = $bdy
+
+        # matrix diagonal
+        diagSz = min(rSz,cSz)
+        diagTypT = vecTypT(diagSz)
+        bdy = :($diagTypT())
+        for i = 1:diagSz
+            push!(bdy.args, mem(mem(:m,col(i)),elt(i)))
+        end
+        @eval diag{T}(m::$TypT) = $bdy
 
         # some one-liners
         @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)

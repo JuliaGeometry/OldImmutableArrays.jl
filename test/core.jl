@@ -101,3 +101,4 @@ c = column(v)
 @assert prod(c) == prod(v)
 @assert v*eye(Mat4d)*v == 30.0
 @assert -r == -1.0*r
+@assert diag(diagm(v)) == v
