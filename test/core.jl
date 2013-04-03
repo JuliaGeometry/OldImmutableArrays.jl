@@ -106,3 +106,4 @@ c = column(v)
 @assert v*eye(Mat4d)*v == 30.0
 @assert -r == -1.0*r
 @assert diag(diagm(v)) == v
+@assert isa(convert(Matrix1x4{Float32},r),Matrix1x4{Float32})
