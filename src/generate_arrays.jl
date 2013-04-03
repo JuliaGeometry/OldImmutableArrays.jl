@@ -175,8 +175,11 @@ function generateArrays(maxSz::Integer)
         end
         @eval diagm{T}(v::$TypT) = $bdy
 
+        # type conversion
+        bdy = mapBody(:(convert(T,x)),3)
+        @eval convert{T}(::Type{$TypT}, v::$Typ) = $bdy
+
         # some one-liners
-        @eval convert{T}(::Type{$TypT}, V::$Typ) = $TypT(ntuple($sz, x->V[x])...)
         @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
         @eval size(::$Typ) = ($sz,)
         @eval zero{T}(::Type{$TypT}) = $TypT(zero(T))
