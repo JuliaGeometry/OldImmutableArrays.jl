@@ -3,6 +3,7 @@ using ImmutableArrays
 typealias Vec2d Vector2{Float64}
 typealias Vec3d Vector3{Float64}
 typealias Vec4d Vector4{Float64}
+typealias Vec3f Vector3{Float32}
 
 v1 = Vec3d(1.0,2.0,3.0)
 v2 = Vec3d(6.0,5.0,4.0)
@@ -76,6 +77,9 @@ e4 = unit(Vec4d,4)
 @assert e2 == Vec4d(0.0,1.0,0.0,0.0)
 @assert e3 == Vec4d(0.0,0.0,1.0,0.0)
 @assert e4 == Vec4d(0.0,0.0,0.0,1.0)
+
+# type conversion
+@assert isa(convert(Vec3f,v1),Vec3f)
 
 # matrix operations
 typealias Mat4d Matrix4x4{Float64}
