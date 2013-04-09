@@ -35,6 +35,5 @@ but be warned that it is still fairly immature.
 
 - Automatic generation of types jumpstarted via 
   [Jay Weisskopf's gist](https://gist.github.com/jayschwa/5250636).
-- Feedback and testing provided by:
-	- Jay Weisskopf (@jayschwa)
-	- Olli Wilkman (@dronir)
+- Travis CI integration by Jay Weisskopf (@jayschwa).
+- Additional feedback and testing provided by Olli Wilkman (@dronir).
