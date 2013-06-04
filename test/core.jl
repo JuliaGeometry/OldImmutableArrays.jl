@@ -80,6 +80,7 @@ e4 = unit(Vec4d,4)
 
 # type conversion
 @assert isa(convert(Vec3f,v1),Vec3f)
+@assert Vector3([1.0,2.0,3.0]) == v1
 
 # matrix operations
 typealias Mat4d Matrix4x4{Float64}

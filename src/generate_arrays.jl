@@ -83,6 +83,10 @@ function generateArrays(maxSz::Integer)
         eval(ctorn)
         eval(ctor1)
 
+        # construct or convert from other vector types
+        @eval $Typ(a::AbstractVector) = $Typ(ntuple($sz, x-> a[x])...)
+        @eval convert(::Type{$Typ}, x::AbstractVector) = $Typ(x)
+
         # getindex
         local getix = :(error(BoundsError))
         for i = sz:-1:1
