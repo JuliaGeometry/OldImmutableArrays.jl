@@ -107,4 +107,10 @@ c = column(v)
 @assert v*eye(Mat4d)*v == 30.0
 @assert -r == -1.0*r
 @assert diag(diagm(v)) == v
+
+# type conversion
 @assert isa(convert(Matrix1x4{Float32},r),Matrix1x4{Float32})
+jm = rand(4,4)
+im = Matrix4x4(jm)
+@assert isa(im,Mat4d)
+@assert jm == im

@@ -238,6 +238,11 @@ function generateArrays(maxSz::Integer)
         # construction from a scalar
         @eval $TypT(a::T) = $TypT($ColTypT(a))
 
+        # construct or convert from other matrix types
+        @eval $Typ(a::AbstractMatrix) = $Typ(ntuple($cSz, c->
+            $ColTyp(ntuple($rSz, r-> a[(c-1)*$cSz+r])...))...)
+        @eval convert(::Type{$Typ}, x::AbstractMatrix) = $Typ(x)
+
         # column access
         local cl = :(error(BoundsError))
         for j = cSz:-1:1
