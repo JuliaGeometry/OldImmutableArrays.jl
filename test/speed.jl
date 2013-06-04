@@ -1,7 +1,9 @@
 using ImmutableArrays
 
 function ratio(f::Function, a1, a2, b1, b2, iters::Integer)
-	@assert f(a1, a2) == f(b1, b2)
+	if f(a1, a2) != f(b1, b2)
+		return string("result mismatch:\n", f(a1, a2), "\n--- vs. ---\n", f(b1, b2))
+	end
 	tic()
 	for i = 1:iters
 		f(a1, a2)
