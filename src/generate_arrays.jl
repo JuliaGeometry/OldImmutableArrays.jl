@@ -240,7 +240,7 @@ function generateArrays(maxSz::Integer)
 
         # construct or convert from other matrix types
         @eval $Typ(a::AbstractMatrix) = $Typ(ntuple($cSz, c->
-            $ColTyp(ntuple($rSz, r-> a[(c-1)*$cSz+r])...))...)
+            $ColTyp(ntuple($rSz, r-> a[r,c])...))...)
         @eval convert(::Type{$Typ}, x::AbstractMatrix) = $Typ(x)
 
         # column access
