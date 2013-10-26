@@ -123,6 +123,9 @@ function generateArrays(maxSz::Integer)
             @eval $op(v1::$Typ,v2::$Typ) = $bdy
 
             bdy = mapBody(:($op(s,x)),3)
+            if op == :.^ # special version for MathConst{:e}
+                @eval $op(s::MathConst{:e},m::$Typ) = $bdy
+            end
             @eval $op(s::Number,v::$Typ) = $bdy
 
             bdy = mapBody(:($op(x,s)),2)
@@ -314,6 +317,9 @@ function generateArrays(maxSz::Integer)
             @eval $op(m1::$Typ,m2::$Typ) = $bdy
 
             bdy = mapBody(:($op(s,x)),3)
+            if op == :.^ # special version for MathConst{:e}
+                @eval $op(s::MathConst{:e},m::$Typ) = $bdy
+            end
             @eval $op(s::Number,m::$Typ) = $bdy
 
             bdy = mapBody(:($op(x,s)),2)
