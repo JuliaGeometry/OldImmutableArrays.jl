@@ -14,23 +14,6 @@ Statically-sized immutable vectors and matrices.
 - Unrolled matrix-vector and matrix-matrix multiplication.
 - Conversions between vectors and row/column matrices.
 
-
-## TODO
-
-- Add more constructors.
-- Add a more complete correctness test suite.
-- Add a performance benchmark test suite.
-- Add projective geometry.
-
-
-## Status
-
-The implementation is, in intention at least, fairly feature-complete.
-The code has been lightly tested,
-sufficient to give the author some degree of confidence in its correctness, 
-but be warned that it is still fairly immature.
-
-
 ## Credits
 
 - Automatic generation of types jumpstarted via 
