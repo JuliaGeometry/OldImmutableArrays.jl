@@ -422,6 +422,11 @@ function generateArrays(maxSz::Integer)
         @eval *{T}(m1::$m1T,m2::$m2T) = $bdy
     end
 
+    # cross products
+    if maxSz >= 2
+        @eval cross(a::Vector2,b::Vector2) = a.e1*b.e2-a.e2*b.e1
+    end
+
     if maxSz >= 3
         @eval cross(a::Vector3,b::Vector3) = Vector3(a.e2*b.e3-a.e3*b.e2, 
                                                      a.e3*b.e1-a.e1*b.e3, 

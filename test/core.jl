@@ -67,6 +67,10 @@ v2 = Vec3d(6.0,5.0,4.0)
 # cross product
 @assert cross(v1,v2) == Vec3d(-7.0,14.0,-7.0)
 @assert isa(cross(v1,v2),Vec3d)
+x = unit(Vec2d,1)
+y = unit(Vec2d,2)
+@assert cross(x,y) == 1.0
+@assert cross(y,x) == -1.0
 
 # basis vectors
 e1 = unit(Vec4d,1)
