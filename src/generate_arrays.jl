@@ -28,11 +28,12 @@ function generateArrays(maxSz::Integer)
 
     const binaryOps = (:+, :-, :.*, :./, :.\, :.^, 
                        :.==, :.!=, :.<, :.<=, :.>, :.>=,
+                       :min, :max,
                        :div, :fld, :rem, :mod, :mod1, :cmp,
                        :atan2, :besselj, :bessely, :hankelh1, :hankelh2, 
                        :besseli, :besselk, :beta, :lbeta)
 
-    const reductions = ((:sum,:+),(:prod,:*),(:max,:max),(:min,:min))
+    const reductions = ((:sum,:+),(:prod,:*),(:minimum,:min),(:maximum,:max))
 
     # expression functions
     vecTyp(n) = symbol(string("Vector",n))
@@ -57,28 +58,17 @@ function generateArrays(maxSz::Integer)
             push!(defn.args[3].args, :($e::T))
         end
 
-        # inner unary and n-ary constructors
-        local ctorn = :($Typ() = new())
-        local ctor1 = :($Typ(a) = new())
-        for i = 1:sz
-            local arg = symbol(string("a",i))
-            push!(ctorn.args[1].args, arg)
-            push!(ctorn.args[2].args, arg)
-            push!(ctor1.args[2].args, :a)
-        end
-        push!(defn.args[3].args, ctorn)
-        push!(defn.args[3].args, ctor1)
-
         # instantiate the type definition
         eval(defn)
 
-        # outer unary and n-ary constructors
+        # unary and n-ary constructors
         ctorn = :($TypT() = $TypT())
-        ctor1 = :($TypT(a::T) = $TypT(a))
+        ctor1 = :($TypT(a::T) = $TypT())
         for i = 1:sz
             local arg = symbol(string("a",i))
             push!(ctorn.args[1].args, :($arg::T))
             push!(ctorn.args[2].args, arg)
+            push!(ctor1.args[2].args, :a)
         end
         eval(ctorn)
         eval(ctor1)
@@ -126,10 +116,18 @@ function generateArrays(maxSz::Integer)
             if op == :.^ # special version for MathConst{:e}
                 @eval $op(s::MathConst{:e},m::$Typ) = $bdy
             end
-            @eval $op(s::Number,v::$Typ) = $bdy
+            if op == :min || op == :max
+                @eval $op{T2<:Real}(s::T2,v::$Typ) = $bdy
+            else
+                @eval $op(s::Number,v::$Typ) = $bdy
+            end
 
             bdy = mapBody(:($op(x,s)),2)
-            @eval $op(v::$Typ,s::Number) = $bdy
+            if op == :min || op == :max
+                @eval $op{T2<:Real}(v::$Typ,s::T2) = $bdy
+            else
+                @eval $op(v::$Typ,s::Number) = $bdy
+            end
         end
 
         for pr = reductions
@@ -212,34 +210,23 @@ function generateArrays(maxSz::Integer)
             push!(defn.args[3].args, :($c::$ColTypT))
         end
 
-        # inner unary and n-ary constructors
-        local ctorn = :($Typ() = new())
-        local ctor1 = :($Typ(a) = new())
-        for i = 1:cSz
-            local arg = symbol(string("a",i))
-            push!(ctorn.args[1].args, arg)
-            push!(ctorn.args[2].args, arg)
-            push!(ctor1.args[2].args, :a)
-        end
-        push!(defn.args[3].args, ctorn)
-        push!(defn.args[3].args, ctor1)
-
         # instantiate the type definition
         eval(defn)
 
-        # outer unary and n-ary constructors
+        # unary and n-ary constructors
         ctorn = :($TypT() = $TypT())
-        ctor1 = :($TypT(a::$ColTypT) = $TypT(a))
+        ctor1 = :($TypT(a::$ColTypT) = $TypT())
         for i = 1:cSz
             local arg = symbol(string("a",i))
             push!(ctorn.args[1].args, :($arg::$ColTypT))
             push!(ctorn.args[2].args, arg)
+            push!(ctor1.args[2].args, :a)
         end
         eval(ctorn)
         eval(ctor1)
 
         # construction from a scalar
-        @eval $TypT(a::T) = $TypT($ColTypT(a))
+        @eval $TypT(a::T) = $Typ($ColTyp(a))
 
         # construct or convert from other matrix types
         @eval $Typ(a::AbstractMatrix) = $Typ(ntuple($cSz, c->
@@ -320,10 +307,19 @@ function generateArrays(maxSz::Integer)
             if op == :.^ # special version for MathConst{:e}
                 @eval $op(s::MathConst{:e},m::$Typ) = $bdy
             end
-            @eval $op(s::Number,m::$Typ) = $bdy
+            if op == :min || op == :max
+                @eval $op{T2<:Real}(s::T2,m::$Typ) = $bdy
+            else
+                @eval $op(s::Number,m::$Typ) = $bdy
+            end
 
             bdy = mapBody(:($op(x,s)),2)
-            @eval $op(m::$Typ,s::Number) = $bdy
+            if op == :min || op == :max
+                @eval $op{T2<:Real}(m::$Typ,s::T2) = $bdy
+            else
+                @eval $op(m::$Typ,s::Number) = $bdy
+            end
+
         end
 
         for pr = reductions
