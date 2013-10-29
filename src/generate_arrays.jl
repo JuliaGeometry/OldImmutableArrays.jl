@@ -187,7 +187,7 @@ function generateArrays(maxSz::Integer)
         # some one-liners
         @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
         @eval size(::$Typ) = ($sz,)
-        @eval zero{T}(::Type{$TypT}) = $TypT(zero(T))
+        @eval zero{T}(::Type{$TypT}) = $Typ(zero(T))
         @eval dot{T}(v1::$TypT,v2::$TypT) = sum(v1.*conj(v2))
         @eval unit{T}(v::$TypT) = v/norm(v)
     end
@@ -393,7 +393,7 @@ function generateArrays(maxSz::Integer)
         # some one-liners
         @eval similar{T}(::$TypT, t::DataType, dims::Dims) = Array(t, dims)
         @eval size(::$Typ) = ($rSz,$cSz)
-        @eval zero{T}(::Type{$TypT}) = $TypT($ColTypT(zero(T)))
+        @eval zero{T}(::Type{$TypT}) = $Typ($ColTyp(zero(T)))
     end
 
     # matrix-matrix multiplication
