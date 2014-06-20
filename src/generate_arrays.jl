@@ -6,7 +6,7 @@ typealias ImmutableMatrix{T} ImmutableArray{T,2}
 
 export unit, row, column
 
-function generateArrays(maxSz::Integer)
+function generate_arrays(maxSz::Integer)
 
     # operations
     const unaryOps = (:-, :~, :conj, :abs, 
@@ -26,12 +26,16 @@ function generateArrays(maxSz::Integer)
                       :besselj0, :besselj1, :bessely0, :bessely1,
                       :eta, :zeta, :digamma)
 
-    const binaryOps = (:+, :-, :.*, :./, :.\, :.^, 
+    # vec-vec and vec-scalar
+    const binaryOps = (:.+, :.-,:.*, :./, :.\, :.^, 
                        :.==, :.!=, :.<, :.<=, :.>, :.>=,
                        :min, :max,
                        :div, :fld, :rem, :mod, :mod1, :cmp,
                        :atan2, :besselj, :bessely, :hankelh1, :hankelh2, 
                        :besseli, :besselk, :beta, :lbeta)
+    
+    # vec-vec only
+    const binaryOps2 = (:+,:-)
 
     const reductions = ((:sum,:+),(:prod,:*),(:minimum,:min),(:maximum,:max))
 
@@ -103,7 +107,6 @@ function generateArrays(maxSz::Integer)
         end
 
         for op = binaryOps
-
             local bdy = :($Typ())
             for i = 1:sz
                 local mem1 = mem(:v1,elt(i))
@@ -128,6 +131,16 @@ function generateArrays(maxSz::Integer)
             else
                 @eval $op(v::$Typ,s::Number) = $bdy
             end
+        end
+        
+        for op = binaryOps2
+            local bdy = :($Typ())
+            for i = 1:sz
+                local mem1 = mem(:v1,elt(i))
+                local mem2 = mem(:v2,elt(i))
+                push!(bdy.args, Expr(:call,op,mem1,mem2))
+            end
+            @eval $op(v1::$Typ,v2::$Typ) = $bdy
         end
 
         for pr = reductions
@@ -319,7 +332,21 @@ function generateArrays(maxSz::Integer)
             else
                 @eval $op(m::$Typ,s::Number) = $bdy
             end
-
+        end
+        
+        for op = binaryOps2
+            local bdy = :($Typ())
+            for j = 1:cSz
+                local cl = :($ColTyp())
+                for i = 1:rSz
+                    push!(cl.args, 
+                          Expr(:call,op,
+                               mem(mem(:m1,col(j)),elt(i)),
+                               mem(mem(:m2,col(j)),elt(i))))
+                end
+                push!(bdy.args, cl)
+            end
+            @eval $op(m1::$Typ,m2::$Typ) = $bdy
         end
 
         for pr = reductions
