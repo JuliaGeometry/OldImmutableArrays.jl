@@ -34,19 +34,31 @@ v2 = Vec3d(6.0,5.0,4.0)
 
 # scalar operations
 @assert 1.0 + v1 == Vec3d(2.0,3.0,4.0)
+@assert 1.0 .+ v1 == Vec3d(2.0,3.0,4.0)
 @assert v1 + 1.0 == Vec3d(2.0,3.0,4.0)
+@assert v1 .+ 1.0 == Vec3d(2.0,3.0,4.0)
 @assert 1 + v1 == Vec3d(2.0,3.0,4.0)
+@assert 1 .+ v1 == Vec3d(2.0,3.0,4.0)
 @assert v1 + 1 == Vec3d(2.0,3.0,4.0)
+@assert v1 .+ 1 == Vec3d(2.0,3.0,4.0)
 
 @assert v1 - 1.0 == Vec3d(0.0,1.0,2.0)
+@assert v1 .- 1.0 == Vec3d(0.0,1.0,2.0)
 @assert 1.0 - v1 == Vec3d(0.0,-1.0,-2.0)
+@assert 1.0 .- v1 == Vec3d(0.0,-1.0,-2.0)
 @assert v1 - 1 == Vec3d(0.0,1.0,2.0)
+@assert v1 .- 1 == Vec3d(0.0,1.0,2.0)
 @assert 1 - v1 == Vec3d(0.0,-1.0,-2.0)
+@assert 1 .- v1 == Vec3d(0.0,-1.0,-2.0)
 
 @assert 2.0 * v1 == Vec3d(2.0,4.0,6.0)
+@assert 2.0 .* v1 == Vec3d(2.0,4.0,6.0)
 @assert v1 * 2.0 == Vec3d(2.0,4.0,6.0)
+@assert v1 .* 2.0 == Vec3d(2.0,4.0,6.0)
 @assert 2 * v1 == Vec3d(2.0,4.0,6.0)
+@assert 2 .* v1 == Vec3d(2.0,4.0,6.0)
 @assert v1 * 2 == Vec3d(2.0,4.0,6.0)
+@assert v1 .* 2 == Vec3d(2.0,4.0,6.0)
 
 @assert v1 / 2.0 == Vec3d(0.5,1.0,1.5)
 @assert v1 ./ 2.0 == Vec3d(0.5,1.0,1.5)
@@ -85,17 +97,25 @@ e4 = unit(Vec4d,4)
 # type conversion
 @assert isa(convert(Vec3f,v1),Vec3f)
 @assert Vector3([1.0,2.0,3.0]) == v1
+@assert convert(Vec3d,[1.0,2.0,3.0]) == v1
+@assert isa(convert(Vector{Float64},v1),Vector{Float64})
+@assert convert(Vector{Float64},v1) == [1.0,2.0,3.0]
+
 
 # matrix operations
-typealias Mat4d Matrix4x4{Float64}
+
 typealias Mat1d Matrix1x1{Float64}
 typealias Mat2d Matrix2x2{Float64}
+typealias Mat3d Matrix3x3{Float64}
+typealias Mat4d Matrix4x4{Float64}
+
 
 @assert zero(Mat2d) == Mat2d(Vec2d(0.0,0.0),Vec2d(0.0,0.0))
 
 v = Vec4d(1.0,2.0,3.0,4.0)
 r = row(v)
 c = column(v)
+
 @assert c*r == Mat4d(Vec4d(1.0,2.0,3.0,4.0),
                      Vec4d(2.0,4.0,6.0,8.0),
                      Vec4d(3.0,6.0,9.0,12.0),
@@ -108,6 +128,7 @@ c = column(v)
 @assert row(r+c',1) == 2*v
 @assert sum(r) == sum(v)
 @assert prod(c) == prod(v)
+@assert eye(Mat3d) == Mat3d(Vec3d(1.0,0.0,0.0),Vec3d(0.0,1.0,0.0),Vec3d(0.0,0.0,1.0))
 @assert v*eye(Mat4d)*v == 30.0
 @assert -r == -1.0*r
 @assert diag(diagm(v)) == v
@@ -118,3 +139,9 @@ jm = rand(4,4)
 im = Matrix4x4(jm)
 @assert isa(im,Mat4d)
 @assert jm == im
+im = convert(Mat4d,jm)
+@assert isa(im,Mat4d)
+@assert jm == im
+jm2 = convert(Array{Float64,2},im)
+@assert isa(jm2,Array{Float64,2})
+@assert jm == jm2

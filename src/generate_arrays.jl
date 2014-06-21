@@ -79,7 +79,19 @@ function generate_arrays(maxSz::Integer)
 
         # construct or convert from other vector types
         @eval $Typ(a::AbstractVector) = $Typ(ntuple($sz, x-> a[x])...)
-        @eval convert(::Type{$Typ}, x::AbstractVector) = $Typ(x)
+        @eval convert{T}(::Type{$TypT}, x::AbstractVector) = $Typ(x)
+
+        # convert to Array
+        @eval begin
+            function convert{T}(::Type{Vector{T}}, v::$TypT)
+                a = Array(T,$sz)
+                for i = 1:$sz
+                    a[i] = v[i]
+                end
+                a
+            end
+        end
+            
 
         # getindex
         local getix = :(error(BoundsError))
@@ -193,7 +205,7 @@ function generate_arrays(maxSz::Integer)
         end
         @eval diagm{T}(v::$TypT) = $bdy
 
-        # type conversion
+        # elementwise type conversion
         bdy = mapBody(:(convert(T,x)),3)
         @eval convert{T}(::Type{$TypT}, v::$Typ) = $bdy
 
@@ -244,7 +256,18 @@ function generate_arrays(maxSz::Integer)
         # construct or convert from other matrix types
         @eval $Typ(a::AbstractMatrix) = $Typ(ntuple($cSz, c->
             $ColTyp(ntuple($rSz, r-> a[r,c])...))...)
-        @eval convert(::Type{$Typ}, x::AbstractMatrix) = $Typ(x)
+        @eval convert{T}(::Type{$TypT}, x::AbstractMatrix) = $Typ(x)
+
+        # convert to Array
+        @eval begin
+            function convert{T}(::Type{Matrix{T}}, m::$TypT)
+                a = Array(T,$rSz,$cSz)
+                for i = 1:$rSz, j = 1:$cSz
+                    a[i,j] = m[i,j]
+                end
+                a
+            end
+        end
 
         # column access
         local cl = :(error(BoundsError))
@@ -413,7 +436,7 @@ function generate_arrays(maxSz::Integer)
         end
         @eval diag{T}(m::$TypT) = $bdy
 
-        # type conversion
+        # elementwise type conversion
         bdy = mapBody(:(convert(T,x)),3)
         @eval convert{T}(::Type{$TypT}, m::$Typ) = $bdy
 

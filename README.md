@@ -13,6 +13,7 @@ Statically-sized immutable vectors and matrices.
   and mathematical functions.
 - Unrolled matrix-vector and matrix-matrix multiplication.
 - Conversions between vectors and row/column matrices.
+- Conversions from AbstractArray and to Array.
 
 ## Credits
 
