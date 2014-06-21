@@ -3,6 +3,7 @@
 Statically-sized immutable vectors and matrices.
 
 [![Build Status](https://travis-ci.org/twadleigh/ImmutableArrays.jl.png?branch=master)](https://travis-ci.org/twadleigh/ImmutableArrays.jl)
+[![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.2.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.2)
 
 ## Features
 
