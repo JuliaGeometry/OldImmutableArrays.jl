@@ -2,8 +2,9 @@
 
 Statically-sized immutable vectors and matrices.
 
-[![Build Status](https://travis-ci.org/twadleigh/ImmutableArrays.jl.png?branch=master)](https://travis-ci.org/twadleigh/ImmutableArrays.jl)
-[![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.2.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.2)
+- Travis: [![Build Status](https://travis-ci.org/twadleigh/ImmutableArrays.jl.png?branch=master)](https://travis-ci.org/twadleigh/ImmutableArrays.jl)
+- Juila 0.2: [![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.2.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.2)
+- Julia 0.3: [![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.3.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.3)
 
 ## Features
 
@@ -15,6 +16,7 @@ Statically-sized immutable vectors and matrices.
 - Unrolled matrix-vector and matrix-matrix multiplication.
 - Conversions between vectors and row/column matrices.
 - Conversions from AbstractArray and to Array.
+- Matrix determinant and inverse. (The current implementation roundtrips the data to/from Array.)
 
 ## Credits
 

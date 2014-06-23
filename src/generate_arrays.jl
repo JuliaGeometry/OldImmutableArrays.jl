@@ -47,6 +47,8 @@ function generate_arrays(maxSz::Integer)
     elt(i) = symbol(string("e",i))
     col(i) = symbol(string("c",i))
     mem(s,e) = Expr(:.,s,Expr(:quote,e))
+    velt(v,i) = mem(v,elt(i))
+    melt(m,i,j) = mem(mem(m,col(j)),elt(i))
 
     # vector types
     for sz = 1:maxSz
@@ -402,8 +404,8 @@ function generate_arrays(maxSz::Integer)
             for j = 1:cSz
                 push!(e.args, 
                       Expr(:call, :*,
-                           mem(mem(:m,col(j)),elt(i)),
-                           mem(:v,elt(j))))
+                           melt(:m,i,j),
+                           velt(:v,j)))
             end
             push!(bdy.args, e)
         end
@@ -456,8 +458,8 @@ function generate_arrays(maxSz::Integer)
                 for k = 1:p
                     push!(e.args,
                           Expr(:call, :*,
-                               mem(mem(:m1,col(k)),elt(i)),
-                               mem(mem(:m2,col(j)),elt(k))))
+                               melt(:m1,i,k),
+                               melt(:m2,k,j)))
                 end
                 push!(c.args, e)
             end
@@ -466,6 +468,15 @@ function generate_arrays(maxSz::Integer)
         local m1T = matTypT(n,p)
         local m2T = matTypT(p,m)
         @eval *{T}(m1::$m1T,m2::$m2T) = $bdy
+    end
+
+    # matrix determinant and inverse
+    for sz in 1:maxSz
+        local Typ = matTyp(sz,sz)
+        local TypT = matTypT(sz,sz)
+
+        @eval det{T}(a::$TypT) = det(convert(Array{T,2},a))
+        @eval inv{T}(a::$TypT) = $Typ(inv(convert(Array{T,2},a)))
     end
 
     # cross products
