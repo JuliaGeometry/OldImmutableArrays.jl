@@ -63,19 +63,13 @@ function generate_arrays(maxSz::Integer)
             local e = elt(i)
             push!(defn.args[3].args, :($e::T))
         end
-
         # instantiate the type definition
         eval(defn)
 
         # unary and n-ary constructors
-        ctorn = :($TypT() = $TypT())
-        ctor1 = :($TypT(a::T) = $TypT())
-        for i = 1:sz
-            local arg = symbol(string("a",i))
-            push!(ctorn.args[1].args, :($arg::T))
-            push!(ctorn.args[2].args, arg)
-            push!(ctor1.args[2].args, :a)
-        end
+        ctorn = :($TypT($([:($(symbol("a$i"))::T) for i=1:sz]...)) = $TypT($([:($(symbol("a$i"))) for i=1:sz]...)))
+        ctor1 = :($TypT(a::T) = $TypT($([:(a) for i=1:sz]...)))
+
         eval(ctorn)
         eval(ctor1)
 
@@ -241,14 +235,9 @@ function generate_arrays(maxSz::Integer)
         eval(defn)
 
         # unary and n-ary constructors
-        ctorn = :($TypT() = $TypT())
-        ctor1 = :($TypT(a::$ColTypT) = $TypT())
-        for i = 1:cSz
-            local arg = symbol(string("a",i))
-            push!(ctorn.args[1].args, :($arg::$ColTypT))
-            push!(ctorn.args[2].args, arg)
-            push!(ctor1.args[2].args, :a)
-        end
+        ctorn = :($TypT($([:($(symbol("a$i"))::$ColTypT) for i=1:cSz]...)) = $TypT($([:($(symbol("a$i"))) for i=1:cSz]...)))
+        ctor1 = :($TypT(a::$ColTypT) = $TypT($([:(a) for i=1:cSz]...)))
+
         eval(ctorn)
         eval(ctor1)
 

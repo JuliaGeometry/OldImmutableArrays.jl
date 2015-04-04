@@ -145,3 +145,4 @@ im = convert(Mat4d,jm)
 jm2 = convert(Array{Float64,2},im)
 @assert isa(jm2,Array{Float64,2})
 @assert jm == jm2
+println("success")
