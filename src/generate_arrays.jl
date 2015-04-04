@@ -68,14 +68,17 @@ function generate_arrays(maxSz::Integer)
         eval(defn)
 
         # unary and n-ary constructors
-        ctorn = :($TypT() = $TypT())
-        ctor1 = :($TypT(a::T) = $TypT())
+        ctorn_sig = :($TypT())
+        ctorn_body = :($TypT())
+        ctor1_body = :($TypT())
         for i = 1:sz
             local arg = symbol(string("a",i))
-            push!(ctorn.args[1].args, :($arg::T))
-            push!(ctorn.args[2].args, arg)
-            push!(ctor1.args[2].args, :a)
+            push!(ctorn_sig.args, :($arg::T))
+            push!(ctorn_body.args, arg)
+            push!(ctor1_body.args, :a)
         end
+        ctorn = :($ctorn_sig = $ctorn_body)
+        ctor1 = :($TypT(a::T) = $ctor1_body)
         eval(ctorn)
         eval(ctor1)
 
@@ -96,7 +99,7 @@ function generate_arrays(maxSz::Integer)
             
 
         # getindex
-        local getix = :(error(BoundsError))
+        local getix = :(throw(BoundsError()))
         for i = sz:-1:1
             local val = mem(:v,elt(i))
             getix = :(ix == $i ? $val : $getix)
@@ -241,14 +244,17 @@ function generate_arrays(maxSz::Integer)
         eval(defn)
 
         # unary and n-ary constructors
-        ctorn = :($TypT() = $TypT())
-        ctor1 = :($TypT(a::$ColTypT) = $TypT())
+        ctorn_sig = :($TypT())
+        ctorn_body = :($TypT())
+        ctor1_body = :($TypT())
         for i = 1:cSz
             local arg = symbol(string("a",i))
-            push!(ctorn.args[1].args, :($arg::$ColTypT))
-            push!(ctorn.args[2].args, arg)
-            push!(ctor1.args[2].args, :a)
+            push!(ctorn_sig.args, :($arg::$ColTypT))
+            push!(ctorn_body.args, arg)
+            push!(ctor1_body.args, :a)
         end
+        ctorn = :($ctorn_sig = $ctorn_body)
+        ctor1 = :($TypT(a::$ColTypT) = $ctor1_body)
         eval(ctorn)
         eval(ctor1)
 
