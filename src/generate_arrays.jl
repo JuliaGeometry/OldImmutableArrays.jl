@@ -104,7 +104,7 @@ function generate_arrays(maxSz::Integer)
             local val = mem(:v,elt(i))
             getix = :(ix == $i ? $val : $getix)
         end
-        getix = :(getindex{T}(v::$TypT, ix::Integer) = $getix)
+        getix = :(@inline getindex{T}(v::$TypT, ix::Integer) = $getix)
         eval(getix)
 
         # helper for defining maps
