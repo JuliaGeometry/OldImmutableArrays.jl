@@ -1,5 +1,7 @@
 importall Base
 
+using Compat
+
 abstract ImmutableArray{T,N} <: AbstractArray{T,N}
 typealias ImmutableVector{T} ImmutableArray{T,1}
 typealias ImmutableMatrix{T} ImmutableArray{T,2}
