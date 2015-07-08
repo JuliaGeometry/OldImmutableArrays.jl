@@ -2,9 +2,10 @@
 
 Statically-sized immutable vectors and matrices.
 
-- Travis: [![Build Status](https://travis-ci.org/twadleigh/ImmutableArrays.jl.png?branch=master)](https://travis-ci.org/twadleigh/ImmutableArrays.jl)
-- Juila 0.2: [![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.2.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.2)
+- Travis: [![Build Status](https://travis-ci.org/JuliaGeometry/ImmutableArrays.jl.svg?branch=master)](https://travis-ci.org/JuliaGeometry/ImmutableArrays.jl)
+- Coveralls: [![Coverage Status](https://coveralls.io/repos/JuliaGeometry/ImmutableArrays.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/JuliaGeometry/ImmutableArrays.jl?branch=master)
 - Julia 0.3: [![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.3.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.3)
+- Julia 0.4: [![ImmutableArrays](http://pkg.julialang.org/badges/ImmutableArrays_0.4.svg)](http://pkg.julialang.org/?pkg=ImmutableArrays&ver=0.4)
 
 ## Features
 
@@ -24,3 +25,6 @@ Statically-sized immutable vectors and matrices.
   [Jay Weisskopf's gist](https://gist.github.com/jayschwa/5250636).
 - Travis CI integration by Jay Weisskopf (@jayschwa).
 - Additional feedback and testing provided by Olli Wilkman (@dronir).
+
+## License
+This package is available under the MIT "Expat" License. See [LICENSE.md](./LICENSE.md).
