@@ -85,8 +85,14 @@ function generate_arrays(maxSz::Integer)
         eval(ctor1)
 
         # construct or convert from other vector types
-        @eval $Typ(a::AbstractVector) = $Typ(ntuple($sz, x-> a[x])...)
-        @eval convert{T}(::Type{$TypT}, x::AbstractVector) = $Typ(x)
+        typ_call = :($Typ())
+        # makes $Typ(a[1], a[2]..., a[sz])
+        append!(typ_call.args, [:(a[$i]) for i = 1:sz])
+        @eval $Typ(a::AbstractVector) = $typ_call
+        convert_call = :($Typ())
+        # makes $Typ(convert(T, a[1]), ..., convert(T, a[sz]))
+        append!(convert_call.args, [:(convert(T, a[$i])) for i = 1:sz])
+        @eval convert{T}(::Type{$TypT}, a::AbstractVector) = $convert_call
 
         # convert to Array
         @eval begin

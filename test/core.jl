@@ -146,3 +146,4 @@ im = convert(Mat4d,jm)
 jm2 = convert(Array{Float64,2},im)
 @test isa(jm2,Array{Float64,2})
 @test jm == jm2
+@test isa(convert(Vector2{Float32},[4.;5.]).e1, Float32)
