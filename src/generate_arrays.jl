@@ -104,7 +104,16 @@ function generate_arrays(maxSz::Integer)
                 a
             end
         end
-            
+
+        # equality
+        # this generates messy lowered code but the assembly looks fine
+        equalities = [:(a[$i] == b[$i]) for i = 1:sz]
+        while length(equalities) > 1
+            equalities[1] = :($(equalities[1]) && $(equalities[2]))
+            deleteat!(equalities, 2)
+        end
+        eq_bdy = equalities[1]
+        @eval (==)(a::$Typ, b::$Typ) = $eq_bdy
 
         # getindex
         local getix = :(throw(BoundsError()))
