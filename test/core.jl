@@ -147,3 +147,11 @@ jm2 = convert(Array{Float64,2},im)
 @test isa(jm2,Array{Float64,2})
 @test jm == jm2
 @test isa(convert(Vector2{Float32},[4.;5.]).e1, Float32)
+
+# Issue #44
+let
+    A = Matrix2x2(eye(2))
+    @test isa(A^0, Matrix2x2)
+    @test isa(A^1, Matrix2x2)
+    @test isa(A^2, Matrix2x2)
+end

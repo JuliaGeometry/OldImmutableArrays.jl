@@ -8,6 +8,10 @@ typealias ImmutableMatrix{T} ImmutableArray{T,2}
 
 export unit, row, column
 
+# Generic ops
+Base.copy(x::ImmutableArray) = x
+Base.one{M<:ImmutableMatrix}(::M) = eye(M)
+
 function generate_arrays(maxSz::Integer)
 
     # operations
