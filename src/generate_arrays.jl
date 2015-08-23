@@ -283,8 +283,14 @@ function generate_arrays(maxSz::Integer)
         @eval $TypT(a::T) = $Typ($ColTyp(a))
 
         # construct or convert from other matrix types
-        @eval $Typ(a::AbstractMatrix) = $Typ(ntuple($cSz, c->
-            $ColTyp(ntuple($rSz, r-> a[r,c])...))...)
+        # accomidate ntuple syntax change on 0.4
+        if VERSION < v"0.4-"
+            @eval $Typ(a::AbstractMatrix) = $Typ(ntuple($cSz, c->
+                $ColTyp(ntuple($rSz, r-> a[r,c])...))...)
+        else
+            @eval $Typ(a::AbstractMatrix) = $Typ(ntuple(c->
+                $ColTyp(ntuple(r-> a[r,c], $rSz)...), $cSz)...)
+        end
         @eval convert{T}(::Type{$TypT}, x::AbstractMatrix) = $Typ(x)
 
         # convert to Array
