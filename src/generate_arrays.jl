@@ -155,7 +155,7 @@ function generate_arrays(maxSz::Integer)
 
             bdy = mapBody(:($op(s,x)),3)
             if op == :.^ # special version for MathConst{:e}
-                @eval $op(s::MathConst{:e},m::$Typ) = $bdy
+                @eval $op(s::Irrational{:e},m::$Typ) = $bdy
             end
             if op == :min || op == :max
                 @eval $op{T2<:Real}(s::T2,v::$Typ) = $bdy
@@ -376,7 +376,7 @@ function generate_arrays(maxSz::Integer)
 
             bdy = mapBody(:($op(s,x)),3)
             if op == :.^ # special version for MathConst{:e}
-                @eval $op(s::MathConst{:e},m::$Typ) = $bdy
+                @eval $op(s::Irrational{:e},m::$Typ) = $bdy
             end
             if op == :min || op == :max
                 @eval $op{T2<:Real}(s::T2,m::$Typ) = $bdy
