@@ -1,3 +1,13 @@
+Dear friend:
+
+The code in this repository, originally hastily written in the earliest days of Julia 0.2 to take advantage of the immutable structs feature which had just landed, was long ago made redundant by more than one better designed and maintained package.
+
+Please instead visit [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl).
+
+Sincerely,
+
+[Tracy Wadleigh](https://github.com/twadleigh), original author.
+
 # ImmutableArrays.jl
 
 Statically-sized immutable vectors and matrices.
